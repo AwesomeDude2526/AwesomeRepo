@@ -8,3 +8,6 @@
       path: /root/git-0.01.tar.gz
       dest: /tmp/git-0.01.tar.gz
       format: tar
+  - unarchive:
+     src: /tmp/git-0.01.tar.gz
+     dest: /tmp
