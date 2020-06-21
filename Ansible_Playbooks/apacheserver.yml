@@ -1,5 +1,5 @@
 ---
-- name: playbook with variables
+- name: playbook to install and configure Apache Web Server
   hosts: servername
   vars:
     pack1: httpd
