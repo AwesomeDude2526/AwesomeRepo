@@ -1,2 +1,2 @@
 # AwesomeRepo
-This repository contains Ansible Playbooks, Bash Scripts, Python Scripts, and Terraform Files.
+This repository contains Ansible Playbooks, Bash Scripts, Python3 Scripts, and Terraform Files.
