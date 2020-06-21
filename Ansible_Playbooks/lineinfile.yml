@@ -1,0 +1,10 @@
+---
+- name: inserting line in a file
+  hosts: servername
+  gather_facts: no
+  tasks:
+  - name: insert line
+    lineinfile:
+      path: /tmp/file
+      insertafter: EOF
+      line: "This is a test"

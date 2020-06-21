@@ -1,0 +1,12 @@
+---
+- name: test
+  hosts: servername
+  tasks:
+  - name: adding
+    user:
+      name: user2
+      state: present
+
+- include: user.yml
+- include: pack.yml
+- include: httpd.yml

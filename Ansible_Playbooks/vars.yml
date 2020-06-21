@@ -1,0 +1,19 @@
+---
+- name: playbook with variables
+  hosts: servername
+  vars:
+    user1: john
+    pack1: vsftpd
+  tasks:
+  - name: create user "{{ user1 }}"
+    user:
+      name: "{{ user1 }}"
+      state: present
+  - name: install package "{{ pack1 }}"
+    yum:
+      name: "{{ pack1 }}"
+      state: latest
+  - name: start "{{ pack1 }}" service
+    service:
+       name: "{{ pack1 }}"
+       state: started

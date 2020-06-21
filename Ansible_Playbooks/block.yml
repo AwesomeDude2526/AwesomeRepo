@@ -1,0 +1,13 @@
+---
+- name: doing a block file
+  hosts: servername
+  tasks:
+  - name: block
+    blockinfile:
+      path: /root/success
+      insertafter: "^second"
+      marker: "######### test ##########"      
+      block: |
+        fourth line
+        fifth line
+      create: yes

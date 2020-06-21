@@ -1,0 +1,17 @@
+---
+- hosts: servername
+  gather_facts: no
+  tasks:
+  - command: uptime
+    register: uptime
+  - debug:
+      msg: "Current Uptime is: {{ uptime }}"
+
+
+- hosts: servername
+  gather_facts: no
+  tasks:
+  - command: uptime
+    register: uptime
+  - debug: var=uptime
+

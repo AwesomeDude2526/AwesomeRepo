@@ -1,0 +1,20 @@
+---
+- name: tags playbook
+  hosts: servername
+  tasks:
+  - name: first task
+    yum:
+      name:
+        - 'httpd'
+        - 'telnet'
+        - 'vsftpd'
+      state: present
+    tags: packages
+  - name: second task
+    service:
+      name: '{{ item }}'
+      state: started
+    with_items:
+      - 'httpd'
+      - 'vsftpd'
+    tags: services

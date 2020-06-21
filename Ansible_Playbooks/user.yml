@@ -1,0 +1,13 @@
+---
+- name: creating user
+  hosts: servername
+  tasks:
+  - name: create user with encrypted password
+    user:
+      name: user1
+      password: add encrypted password using command "openssl passwd password"
+      uid: 2500
+      groups: wheel, admin
+      home: /home/user1
+      comment: User1
+      shell: /bin/bash

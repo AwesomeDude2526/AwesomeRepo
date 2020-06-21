@@ -1,0 +1,19 @@
+---
+- name: creating and copying files
+  hosts: servername
+  tasks:
+  - name: creating empty file on remote server
+    file:
+      path: /root/fileonremoteserver
+      state: touch
+  - name: creating file with content
+    copy:
+      dest: /root/file
+      content: "let's see if this works"
+      mode: 0777
+  - name: copying file
+    copy:
+      src: /root/fileoncontrolnode
+      dest: /root/fileonremoteserver
+      mode: 0777
+

@@ -1,0 +1,12 @@
+---
+- hosts: servername
+  gather_facts: yes
+  tasks:
+  - file:
+      path: /root/file
+      state: touch
+  - debug:
+      msg:
+      - This host is running '{{ ansible_distribution }}' and is host '{{ ansible_host }}'
+      - This host is running {{ ansible_distribution }} and is host {{ ansible_host }}
+

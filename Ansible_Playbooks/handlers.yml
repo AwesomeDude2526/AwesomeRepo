@@ -1,0 +1,14 @@
+---
+- hosts: servername
+  tasks:
+  - name: install package
+    yum:
+      name: vsftpd
+      state: installed
+    notify:
+    - start ftp service
+  handlers:
+  - name: start ftp service
+    service:
+      name: vsftpd
+      state: started

@@ -1,0 +1,31 @@
+Install Terraform on CentOS 7:
+
+1) Install wget and unzip packages:
+yum install wget unzip
+
+2) Download Terraform from the developer’s website (https://www.terraform.io/downloads.html):
+wget https://releases.hashicorp.com/terraform/0.12.2/terraform_0.12.2_linux_amd64.zip
+
+3) Extract the downloaded Terraform zip file to directory /usr/local/bin:
+unzip ./terraform_0.12.2_linux_amd64.zip -d /usr/local/bin
+
+4) Verify that Terraform is properly installed on your system:
+terraform --version
+
+
+
+Working with Terraform:
+
+1) Create directory for Terraform:
+mkdir terraform ###   Directory name can be anything
+
+2) Write the terraform file (Example: ec2_instance.tf):
+vi ec2_instance.tf   ### See the ec2_instance.tf file as example
+
+3) terraform init - Initialize terraform on the directory, Will download required plugins as well for the respective provider
+
+4) terraform plan - Test out your terraform file to make sure there are no errors
+
+5) terraform apply - Run your terraform file to deploy resources on AWS
+
+6) terraform destroy - Delete your resources on AWS

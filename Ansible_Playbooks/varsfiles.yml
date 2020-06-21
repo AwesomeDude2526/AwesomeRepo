@@ -1,0 +1,10 @@
+---
+- name: variable file
+  hosts: servername
+  vars_files:
+    - /root/env
+  tasks:
+  - name: copying file
+    copy:
+      src: "{{ FILING }}"
+      dest: /root/CHECK

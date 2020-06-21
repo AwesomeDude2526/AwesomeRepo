@@ -1,0 +1,26 @@
+---
+- name: testing vars
+  hosts: servername
+  vars:
+    pack1: vsftpd
+    pack2: rpcbind
+    pack3: nfs-utils
+    pack4: telnet
+    serv1: nfs
+  tasks:
+  - name: install packages
+    yum:
+      name:
+        - "{{pack1}}"
+        - "{{pack2}}"
+        - "{{pack3}}"
+        - "{{pack4}}"
+      state: present
+  - name: start services
+    service:
+      name: "{{ item }}"
+      state: started
+    with_items:
+        - '{{ pack1 }}'
+        - '{{ pack2 }}'
+        - '{{ serv1 }}'

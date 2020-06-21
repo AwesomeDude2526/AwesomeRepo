@@ -1,0 +1,15 @@
+### Template is useful if you want to copy configuration files that contain dynamic information. Create file on Control Node using variables. Change the values of the variables within the playbook to update the file on different servers###
+
+---
+- hosts: servername
+  tasks:
+  - template:
+      src: /root/fileoncontrolnode
+      dest: /tmp/fileonremoteserver
+  vars:
+    name1: Kelly
+    name2: Michelle
+    name3: Sonia
+    car1: Honda
+    car2: Toyota
+    car3: Lexus

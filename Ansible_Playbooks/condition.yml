@@ -1,0 +1,35 @@
+---
+- name: plays with conditions
+  hosts: servername
+  gather_facts: yes
+  tasks:
+  - name: install vsftpd on RedHat using YUM Module #Could use Package Module as well
+    yum:
+      name: vsftpd
+      state: installed
+    when: ansible_os_family == "RedHat"
+  - name: install httpd on Debian using Package Module
+    package:
+      name: apache2
+      state: present
+    when: ansible_distribution == "Debian"
+
+
+- name: working with conditions and variables
+  hosts: servername
+  vars:
+    age: 10
+    sex: male
+  tasks:
+  - name: creating file based on conditions with variables
+    copy:
+      dest: /tmp/condition
+      content: "this is a condition test"
+    when: age > 9 and sex == "male"
+  - name: copying file based on conditions with variables
+    copy:
+      src: /root/condition
+      dest: /tmp/condition
+    when: age > 9 and sex == "male"
+
+

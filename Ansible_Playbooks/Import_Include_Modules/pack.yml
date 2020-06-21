@@ -1,0 +1,8 @@
+---
+- name: install pack
+  hosts: servername
+  tasks:
+  - name: telnet
+    yum:
+      name: telnet
+      state: present

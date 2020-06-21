@@ -1,0 +1,31 @@
+---
+- name: playbook with variables
+  hosts: servername
+  vars:
+    pack1: httpd
+  tasks:
+  - name: install package "{{ pack1 }}"
+    yum:
+      name: "{{ pack1 }}"
+      state: latest
+  - name: create index.html file
+    copy:
+      dest: /var/www/html/index.html
+      content: <html><h1>This is my HTTP Website</h1></html>
+  - name: start "{{ pack1 }}" service
+    service:
+       name: "{{ pack1 }}"
+       state: started
+  - name: open port 80 for "{{ pack1 }}"
+    iptables:
+       chain: INPUT
+       protocol: tcp
+       destination_port: 80
+       jump: ACCEPT
+  - name: save iptables
+    shell: "service iptables save"
+  - name: restart iptables service
+    service:
+       name: iptables
+       state: restarted
+

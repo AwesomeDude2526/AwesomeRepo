@@ -1,0 +1,10 @@
+---
+- hosts: servername
+  tasks:
+  - get_url:
+      url: https://mirrors.edge.kernel.org/pub/software/scm/git/git-0.01.tar.gz
+      dest: /root
+  - archive:
+      path: /root/git-0.01.tar.gz
+      dest: /tmp/git-0.01.tar.gz
+      format: tar

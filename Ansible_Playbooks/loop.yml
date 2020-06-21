@@ -1,0 +1,14 @@
+---
+- name: loop playbook
+  hosts: servername
+  tasks:
+  - name: add multi users
+    user:
+      name: '{{ item }}'
+      state: present
+      groups: wheel
+    loop:
+      - user1
+      - user2
+      - user3
+      - user4
