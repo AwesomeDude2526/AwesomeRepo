@@ -1,0 +1,33 @@
+### Make sure to install python-boto and python-boto3 via YUM and Add localhost to Ansible inventory file ###
+### python-boto and python-boto3 allows Ansible modules to interact with or make API calls to AWS ###
+### Create ansible user on AWS and on localhost machine ###
+### Generate SSH keys for ansible user and copy public key on localhost ###
+### Create variable file for storing AWS keys and Encrypt it with Ansible Vault ###
+
+---
+- name: Create EC2 instance on AWS via Ansible
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+  - /home/ansible/awskeys
+  tasks:
+  - name: Create a single Linux EC2 instance
+    ec2:
+      aws_access_key: "{{ AWS_ACCESS_KEY_ID }}"
+      aws_secret_key: "{{ AWS_SECRET_ACCESS_KEY }}"
+      region: us-east-1
+      instance_type: t2.micro
+      keypair: myec2keys
+      image: ami-09d95fab7fff3776c
+      assign_public_ip: yes
+      vpc_subnet_id: subnet-0df583fd0debf7693 #us-east-1f
+      group: mysecuritygroupforsshandhttp   #Security Group Name
+#      group_id: sg-038db27f1896c8860   #Security Group ID
+      wait: true
+      exact_count: 1
+      count_tag:
+        Name: LinuxVM
+      instance_tags:
+        Name: LinuxVM
+    register: ec2
+  - debug: var=ec2
