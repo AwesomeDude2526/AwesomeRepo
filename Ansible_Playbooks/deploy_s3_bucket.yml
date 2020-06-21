@@ -1,0 +1,28 @@
+---
+- name: Create S3 Bucket on AWS via Ansible
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+  - /home/ansible/awskeys
+  tasks:
+  - name: Create an S3 Bucket
+    aws_s3:
+      aws_access_key: "{{ AWS_ACCESS_KEY_ID }}"
+      aws_secret_key: "{{ AWS_SECRET_ACCESS_KEY }}"
+      region: us-east-1
+      bucket: wah-wah-awesome-bucket   #BucketName
+      mode: create
+    register: creates3bucket
+  - debug: var=creates3bucket
+  - name: Adding an object to the S3 Bucket
+    aws_s3:
+      aws_access_key: "{{ AWS_ACCESS_KEY_ID }}"
+      aws_secret_key: "{{ AWS_SECRET_ACCESS_KEY }}"
+      region: us-east-1
+      bucket: wah-wah-awesome-bucket
+      mode: put   #Upload object from localhost to AWS S3 Bucket
+      object: fromansible.txt   #Name of Object in AWS S3 Bucket
+      src: /home/ansible/testfile.txt  #Source on localhost
+      permission: public-read   #Make it public
+    register: s3object
+  - debug: var=s3object
