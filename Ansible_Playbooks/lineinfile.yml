@@ -1,10 +1,32 @@
 ---
-- name: inserting line in a file
-  hosts: servername
+- name: Adding line in file
+  hosts: master
   gather_facts: no
   tasks:
-  - name: insert line
+  - name: creating and adding lines to a new file with a loop
     lineinfile:
-      path: /tmp/file
+      path: /root/lineinfile.txt
       insertafter: EOF
-      line: "This is a test"
+      create: yes
+      line: '{{ item }}'
+    loop:
+      - this is the third line
+      - this is the fourth line
+      - this is the fifth line
+      - this is the sixth line
+  - name: inserting before
+    lineinfile:
+      path: /root/lineinfile.txt
+      insertbefore: BOF
+      line: '{{ item }}'
+    loop:
+      - this is the first line
+      - this is the second line
+  - name: creating and adding line to a new file
+    lineinfile:
+      path: /root/lineinfile.txt
+      line: '{{ item }}'
+      state: present
+    loop:
+      - dude
+      - awesome
