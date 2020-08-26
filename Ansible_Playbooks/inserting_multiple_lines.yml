@@ -1,0 +1,45 @@
+---
+- name: Inserting multiple lines in multiple places in a single file
+  hosts: jenkins
+  gather_facts: no
+  tasks:
+  - name: Check if the lines exist
+    lineinfile:
+      path: inserting_config_file.txt
+      line: '{{item}}'
+    with_items:
+      - '# Testing'
+      - 'limit=2500'
+    check_mode: yes
+    register: lineexists
+  - name: debug
+    debug: var=lineexists
+
+  - name: If lines don't exist in the file then add them, otherwise skip this task
+    replace:
+       path: inserting_config_file.txt
+       regexp: '{{item.regexp}}\n(?!{{item.line}})'
+       replace: '{{item.regexp}}\n{{item.line}}'
+    with_items:
+      - {regexp: 'listen	25000;', line: 'limit=2500\n'}
+      - {regexp: 'listen	25000;', line: '# Testing\n'}
+      - {regexp: 'listen	41000;', line: 'limit=2500\n'}
+      - {regexp: 'listen	41000;', line: '# Testing\n'}
+      - {regexp: 'listen	63000;', line: 'limit=2500\n'}
+      - {regexp: 'listen	63000;', line: '# Testing\n'}
+    when: lineexists.changed
+
+
+#---
+#- name: inserting lines in file
+#  hosts: jenkins
+#  gather_facts: no
+#  tasks:
+#  - name: replace module
+#    replace:
+#       path: inserting_config_file.txt
+#       regexp: 'Awesome\n(?!{{replace_string}})'
+#       replace: 'Awesome\n{{replace_string}}'
+#    vars:
+#      replace_string: 'This is the newly added line\n'
+

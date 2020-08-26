@@ -1,0 +1,6 @@
+server {
+listen	25000;
+server {
+listen	41000;
+server {
+listen	63000;
