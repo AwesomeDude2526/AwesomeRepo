@@ -14,3 +14,9 @@ my_list.pop() # Will remove the last item on the list #
 my_list.append(6) # Will add number 6 to the end of the list #
 my_list.insert(0, 'A') # Will add A to index 0 #
 my_list += [6] # Will add number 6 to the end of the list #
+
+#Remove last character
+name = "awesome"
+print(name[:-1])
+awesom
+

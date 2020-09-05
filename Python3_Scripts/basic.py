@@ -33,5 +33,10 @@ print(name.lower())
 print("Awesome" in name)
 print(len(name))
 print(f'{name} {current_age}')
+print(name.strip()) #Removes all the blank spaces
 
+name = input('Please insert some wording: ')
+INPUT will be = hi.this.is.a.test
+print(name.split('.')) #Removes the "." and creates a list
+OUTPUT will be = ['hi', 'this', 'is', 'a', 'test']
 
