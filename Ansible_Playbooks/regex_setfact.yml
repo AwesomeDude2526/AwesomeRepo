@@ -1,0 +1,17 @@
+---
+- name: Testing set_fact and regex
+  hosts: localhost
+  gather_facts: no
+  tasks:
+  - set_fact:
+      varnew: "{{var1|lower}}"
+  - shell: echo "{{ varnew }}"
+    when: varnew is not regex('[^a-z\d]+')   #Only accepts lowercase letters and numbers
+    register: output
+  - debug: msg="No special characters or whitespaces allowed!"
+    when: output.changed == false
+  - debug: var=output
+    when: output.changed == true
+  - set_fact:
+      test: "{{ output.stdout | upper }}"
+  - debug: var=test
