@@ -1,4 +1,7 @@
 ---
-[linux]
-centos8
-master
+all:
+  hosts:
+    linux:
+      hosts:
+        centos8:
+        master:
