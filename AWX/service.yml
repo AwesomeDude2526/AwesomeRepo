@@ -2,6 +2,6 @@
 - hosts: all
   gather_facts: no
   tasks:
-  - service:
-      name: {{name}}
-      status: {{status}}
+  - systemd:
+      name: "{{name}}"
+      state: "{{status}}"
