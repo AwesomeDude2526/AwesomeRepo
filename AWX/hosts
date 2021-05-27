@@ -3,5 +3,5 @@ all:
   children:
     linux:
       hosts:
-        centos8:
-        master:
+        192.168.1.4:
+        192.168.1.25:
