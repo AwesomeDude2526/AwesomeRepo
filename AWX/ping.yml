@@ -1,0 +1,7 @@
+---
+- hosts: all
+  gather_facts: no
+  tasks:
+  - ping:
+    register: ping_output
+  - debug: var=ping_output.ping
