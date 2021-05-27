@@ -5,3 +5,8 @@
   - systemd:
       name: "{{name}}"
       state: "{{status}}"
+    register: service_output
+  - debug:
+      msg:
+      - "Name of Service: {{service_output.name}}"
+      - "State of Service: {{service_output.state}}"
