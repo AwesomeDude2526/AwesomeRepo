@@ -1,0 +1,16 @@
+---
+- hosts: all
+  gather_facts: no
+  tasks:
+  - yum:
+      name: "{{name}}"
+      state: "{{status}}"
+    register: pack_output
+  - debug:
+      msg:
+      - "Name of Package Installed: {{pack_output.results}}"
+    when: pack_output.changed == true
+  - debug:
+      msg:
+      - "Package {{name}} is already installed"
+    when: pack_output.changed == false
