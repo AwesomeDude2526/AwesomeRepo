@@ -1,0 +1,13 @@
+---
+- name: This playbook is for sending emails
+  hosts: localhost
+  gather_facts: no
+  tasks:
+  - name: Send Email
+    mail:
+      from: email address
+      to:
+      - email address
+      subject: This is a test email
+      body: |
+        This is the body of the email
