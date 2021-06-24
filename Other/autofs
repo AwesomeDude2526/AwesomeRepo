@@ -1,0 +1,16 @@
+yum install autofs -y
+
+vim /etc/auto.master
+mountpoint	/etc/auto.filename	--timout 10
+/myshare	/etc/auto.myshare	--timeout 10
+
+
+vim /etc/auto.myshare
+dir1	-fstype=ext4	:/dev/sdc
+
+systemctl restart autofs.service
+
+cd /myshare/dir1
+
+lsblk or df -h will show the mounted filesystem
+
