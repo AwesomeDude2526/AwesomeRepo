@@ -14,6 +14,10 @@ stratis filesystem snapshot nameofpool filesystemname nameofsnapshot ---> create
 
 stratis filesystem destroy namepool nameofsnapshot ---> destory snapshot
 
+stratis filesystem destroy filesystemname ---> destory filesystem
+
+stratis pool destroy poolname ---> destory pool
+
 stratis pool add-data nameofpool /device  ---> add disk to pool
 
 mount /stratis/nameofpool/filesystemname /mountpoint ---> mount stratis pool temporarily
