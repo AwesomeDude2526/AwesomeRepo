@@ -1,0 +1,29 @@
+yum install stratisd stratis-cli -y
+
+service is stratisd
+
+stratis pool create nameofpool /device or /devices ---> create stratis pool
+
+stratis pool list ---> list pools
+
+stratis filesystem create nameofpool filesystemname ---> create filesystem
+
+stratis filesystem list ---> list filesystems
+
+stratis filesystem snapshot nameofpool filesystemname nameofsnapshot ---> create snapshot of filesystem
+
+stratis filesystem destroy namepool nameofsnapshot ---> destory snapshot
+
+stratis pool add-data nameofpool /device  ---> add disk to pool
+
+mount /stratis/nameofpool/filesystemname /mountpoint ---> mount stratis pool temporarily
+
+blkid -p /stratis/nameofpool/filesystemname ---> to get UID of filesystem to mount it in fstab
+
+Mount in FSTAB:
+UUID=	mountpoint	xfs	defaults,x-systemd.requires=stratisd.service	0 0
+
+systemctl daemon-reload
+
+mount -a
+
