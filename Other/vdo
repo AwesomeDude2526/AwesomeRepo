@@ -1,0 +1,30 @@
+yum install vdo kmod-kvdo -y
+
+systemctl status vdo.service
+
+vdo create --name=myvdo --device=/dev/sd --vdoLogicalSize=10T ---> create vdo
+
+udevadm settle ---> register the udevadm service
+
+mkfs.xfs -K /dev/mapper/myvdo ---> make filesystem
+
+mkdir /mnt/myvdo ---> create directory
+
+FSTAB file:
+/dev/mapper/myvdo	/mnt/myvdo	xfs	defaults,x-systemd.requires=vdo.service	0 0
+
+systemctl daemon-reload
+
+mount -a
+
+vdostats ---> check statistics of vdo
+
+
+Removing VDO:
+
+Remove from fstab and Unmount it
+
+vdo stop --name=myvdo ---> stop vdo
+
+vdo remove --name=myvdo ---> remove vdo
+
