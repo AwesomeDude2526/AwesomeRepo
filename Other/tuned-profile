@@ -1,0 +1,10 @@
+yum install tuned -y
+
+systemctl status tuned.service
+
+tuned-adm active ---> To see current active profile
+
+tuned-adm list ---> To view all the available profiles
+
+tuned-adm profile powersave ---> To change profile
+
