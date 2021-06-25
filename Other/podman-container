@@ -28,6 +28,8 @@ podman run -d --name mycontainer -v /local/dir:/container/dir imagename
 
 podman run -it imagename
 
+podman run -it -v /share:/share:Z ubuntu /bin/bash ---> The Z will ignore SELinux, in case it's set to Enforcing Mode
+
 podman exec -it imagename /bin/bash
 
 podman exec containername ls -l
