@@ -1,0 +1,40 @@
+yum module install container-tools -y
+
+Config File:  /etc/containers/registries
+
+podman info
+
+podman search nginx
+
+podman search --limit 5 httpd
+
+podman inspect imagename
+
+podman pull image
+
+podman images
+
+podman run -d imagename
+
+podman run -d --name myimage imagename
+
+podman run -d --name myimage -p 8080:80 imagename
+
+podman run -d --name myimage -e variable=value imagename
+
+podman run -d --name myimage -v /local/dir:/container/dir imagename
+
+podman run -it imagename
+
+podman exec -it imagename /bin/bash
+
+podman exec containername ls -l
+
+podman ps or podman ps -a
+
+When inside a container, hit CTRL+p CTRL+q to exit without stopping the container
+
+podman stop containername
+
+podman start containername
+
