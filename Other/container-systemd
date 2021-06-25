@@ -1,0 +1,53 @@
+FIRST METHOD:
+
+getsebool -a | grep container
+
+setsebool -P container_manager_cgroup on
+
+podman run -d --name httpd-user1 -p 7000:7000 httpd
+
+mkdir -p /home/user1/.config/systemd/user
+
+Generate systemd file in the users directory you just created above:
+podman generate systemd --name httpd-user1 --files
+
+systemctl --user daemon-reload
+
+Modify the systemd file and modify value to WantedBy=default.target
+
+systemctl --user start container-http-user1.service
+
+systemctl --user enable container-httpd-user1.service
+
+systemctl --user status container-httpd-user1.service
+
+
+
+SECOND METHOD:
+
+setsebool -P container_manager_cgroup off
+
+loginctl enable-linger user1 ---> Need to do this in order to start and enable services for a particular user
+
+loginctl show-user username ---> Check if Linger is enabled/disabled for a user or  not, Must be enabled
+
+loginctl enable-linger username
+loginctl disable-linger username
+
+podman run -d --name httpd-user2 httpd
+
+mkdir -p /home/user2/.config/systemd/user
+
+Inside the created directly, generate systemd file
+podman generate systemd --name httpd-user2 --files
+
+systemctl --user daemon-reload
+
+Change the line in config file WantedBy=default.target
+
+systemctl --user enable container-httpd-user2.service
+
+reboot to double check if the service comes up after reboot
+
+systemctl --user status container-httpd-user2.service
+
