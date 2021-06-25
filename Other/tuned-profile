@@ -8,3 +8,6 @@ tuned-adm list ---> To view all the available profiles
 
 tuned-adm profile powersave ---> To change profile
 
+tuned-adm recommend ---> To get recommended profile by tuned
+
+tuned-adm profile recommend ---> To set profile recommended by tuned
