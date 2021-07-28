@@ -1,0 +1,43 @@
+---
+- hosts: localhost
+  gather_facts: no
+  tasks:
+
+  - name: create partition of device /dev/sdc and allocate all space to partition
+    parted:
+      state: present
+      device: /dev/sdc
+      flags: [ lvm ] #Use this if you want to assign partition type as LVM
+      number: 1
+      unit: s
+      part_start: 2048s
+      part_end: 100%
+    tags: part
+
+  - name: create volume group on sdc1
+    lvg:
+      vg: myvg3
+      pvs: /dev/sdc1
+    tags: vg
+
+  - name: create logical volume
+    lvol:
+      vg: myvg3
+      lv: mylv3
+      size: 1g
+      shrink: false
+    tags: lv
+
+  - name: format lv with ext4 fs
+    filesystem:
+      fstype: ext4
+      dev: /dev/mapper/myvg3-mylv3
+    tags: fs
+
+  - name: mount lv
+    mount:
+      path: /root/sdc1lvm
+      src: /dev/mapper/myvg3-mylv3
+      fstype: ext4
+      state: mounted
+    tags: mount
