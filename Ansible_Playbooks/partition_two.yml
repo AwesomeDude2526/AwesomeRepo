@@ -1,0 +1,54 @@
+---
+- hosts: localhost
+  gather_facts: no
+  tasks:
+
+  - name: create partition 1 of /dev/sdc
+    parted:
+      state: present
+      device: /dev/sdc
+      flags: [ lvm ]
+      number: 1
+      unit: s
+      part_start: 2048s
+      part_end: 1026047s
+    tags: part
+
+  - name: create partition 2 of /dev/sdc
+    parted:
+      state: present
+      device: /dev/sdc
+      flags: [ lvm ]
+      number: 2
+      unit: s
+      part_start: 1026048s
+      part_end: 2050047s
+    tags: part2
+
+  - name: create volume group on sdc1
+    lvg:
+      vg: myvg3
+      pvs: /dev/sdc1
+    tags: vg
+
+  - name: create logical volume
+    lvol:
+      vg: myvg3
+      lv: mylv3
+      size: 1g
+      shrink: false
+    tags: lv
+
+  - name: format lv with xfs fs
+    filesystem:
+      fstype: ext4
+      dev: /dev/mapper/myvg3-mylv3
+    tags: fs
+
+  - name: mount lv
+    mount:
+      path: /root/sdc1lvm
+      src: /dev/mapper/myvg3-mylv3
+      fstype: ext4
+      state: mounted
+    tags: mount
