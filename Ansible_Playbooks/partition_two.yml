@@ -25,6 +25,20 @@
       part_end: 2050047s
     tags: part2
 
+  - name: create 2 partitions of /dev/sdc using single play
+    parted:
+      state: present
+      device: /dev/sdc
+      flags: [ lvm ]
+      number: "{{ item.number }}"
+      unit: s
+      part_start: "{{ item.start }}"
+      part_end: "{{ item.end }}"
+    with_items:
+      - { number: 1, start: 2048s, end: 1026047s }
+      - { number: 2, start: 1026048s, end: 2050047s }
+    tags: partall
+
   - name: create volume group on sdc1
     lvg:
       vg: myvg3
