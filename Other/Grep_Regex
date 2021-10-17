@@ -1,0 +1,97 @@
+Match lines with lower case letters, numbers, and spaces
+$ grep '[[:space:]][a-z][A-Z][0-9]' filename
+
+
+Match 4 spaces, 3 lowercase letters, 2 uppercase letters, and 1 number
+$ grep '[[:space:]]\{4\}[a-z]\{3\}[A-Z]\{2\}[0-9]\{1\}' filename
+
+
+Grep everything between two strings:
+sed -n '/Code/,/Develop/p' data
+sed -n '/Code/,//p' data  ---> Use this with the last string in the file or
+sed -n '/Code/,/*/p' data
+
+
+Grep for line that starts with "first" and ends with "second"
+egrep '^first|second$' data
+
+
+Grep for line that starts with "first" and "second"
+egrep '^first|second' data
+
+
+Grep the exact word "first", will ignore words like first1, firstcode:
+grep "\<first\>" textfile
+
+
+Anything that begins with n or N:
+$ grep ^[nN] test.txt
+no color
+
+
+Anything that doesn't begin with n or N:
+$ grep ^[^nN] test.txt
+
+
+Look for word color only (colored would be excluded from search), this creates a word boundry:
+$ grep -E '\bcolor\b' test.txt
+no color
+color
+
+
+Any line that starts with color, we can use the word boundary with an extended search to exclude colored:
+$ grep -E '^color\b' test.txt
+color
+
+
+Make the "u" optional, will grep you anything with u inside it as well:
+$ grep -E '\bcolou?r\b' test.txt
+$ grep -E "(copy)?right" test.txt
+no color
+color
+colour
+ Copyright (C) 2007 Free Software Foundation, Inc. (greps Copyright)
+  To protect your rights, we need to prevent others from denying you (greps rights)
+
+
+Match anything that has two characters and then the string cept, you would use the following pattern:
+grep "..cept" test.txt
+
+
+Find every line that begins with a capital letter, you can use the following patterns:
+grep "^[A-Z]" test.txt
+grep "^[[:upper:]]" test.txt
+
+
+Find pattern .ode, but will not match the word code, (^ within brackets will exclude that character):
+grep "[^c]ode" test.txt
+
+
+Find each line that contains an opening and closing parenthesis, with only letters and single spaces in between, use the following expression:
+grep "([A-Za-z ]*)" test.txt
+
+
+Find any line that begins with a capital letter and ends with a period, use the following expression which escapes the ending period so that it represents a literal period instead of the usual “any character” meaning:
+grep "^[A-Z].*\.$" test.txt
+
+
+Find either TEST or 'This is a test' in the text:
+grep -E "(TEST|This is a test)" test.txt
+
+
+Matches the string free plus one or more characters that are not white space characters:
+grep -E "free[^[:space:]]+" test.txt
+f the GPL, as needed to protect the freedom of users. (greps freedom)
+patents cannot be used to render the program non-free. (greps free.)
+
+
+Match any words that have between 16 and 20 characters, use the following expression:
+grep -E "[[:alpha:]]{16,20}" test.txt
+
+
+[:alnum:]       Alphanumeric characters.
+[:alpha:]       Alphabetic characters.
+[:blank:]       Space and tab.
+[:digit:]       Digits.
+[:lower:]       Lowercase letters.
+[:upper:]       Uppercase letters.
