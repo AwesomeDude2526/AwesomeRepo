@@ -1,0 +1,23 @@
+### File "config" should be located under the .ssh folder with 600 permission ###
+
+Host awsbastionhost
+    User <Username>
+    HostName <IP of awsbastionhost>
+    ForwardAgent yes
+    IdentityFile ~/.ssh/id_rsa ### Private Key ###
+
+Host <IP / Range of IPs / Hostnames of hosts located in private network that you want to connect to via the AWSBastionHost Jumphost>
+    ProxyJump awsbastionhost
+
+
+
+Host *
+    Port 22
+    AddKeysToAgent yes
+    ForwardAgent yes
+    IdentityFile  ~/.ssh/id_rsa ### Private Key ###
+    User <Username>
+    StrictHostKeyChecking no
+    ServerAliveInterval 30
+    ServerAliveCountMax 3
+
