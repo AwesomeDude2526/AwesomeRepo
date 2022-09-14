@@ -12,8 +12,13 @@ To provision the production environment, I’ll be using Terraform as my choice 
 Let’s put together the required Terraform Code Files:
 
 variables.tf
+
 main.tf - Set AWS as our provider
+
 data.tf - Get data for current available Availability Zones
+
 vpc.tf - Create VPC, Two Subnets in different availability zones, Internet Gateway, NAT Gateway, Routing Tables, and Security Groups
+
 aws_eks_cluster.tf - AWS EKS Cluster setup with IAM Role and IAM Policy, along with scaling configurations
+
 output.tf
