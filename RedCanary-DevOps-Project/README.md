@@ -6,7 +6,7 @@ To provision the production environment, I’ll be using Terraform as my choice 
 2) AWS CLI installed and configured
 3) Have access to your AWS Secret Access Key and AWS Access Key ID.
 4) Either use an AWS Admin Account or Your account should at least have the required access to create the required AWS resources
-5) Installed kubectl to manage/interact with your cluster
+5) Installed eksctl or kubectl to manage/interact with your cluster
 
 
 Let’s put together the required Terraform Code Files:
