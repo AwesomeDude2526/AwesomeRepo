@@ -1,6 +1,6 @@
 variable "prod_eks_cluster" {
-  default     = "prod_eks_cluster"
-  type        = string
+  default = "prod_eks_cluster"
+  type    = string
 }
 
 variable "aws_region" {

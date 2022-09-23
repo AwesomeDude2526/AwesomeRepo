@@ -4,7 +4,7 @@ resource "aws_eks_cluster" "prod_eks_cluster" {
   role_arn = aws_iam_role.prod_eks_cluster.arn
 
   vpc_config {
-    subnet_ids              = flatten([aws_subnet.public_subnet[*].id, aws_subnet.private_subnet[*].id])
+    subnet_ids = flatten([aws_subnet.public_subnet[*].id, aws_subnet.private_subnet[*].id])
   }
 
   depends_on = [
@@ -55,7 +55,7 @@ resource "aws_security_group_rule" "cluster_inbound" {
   from_port                = 443
   protocol                 = "tcp"
   security_group_id        = aws_security_group.prod_eks_cluster_sg.id
-  source_security_group_id = aws_security_group. prod_eks_cluster_sg.id
+  source_security_group_id = aws_security_group.prod_eks_cluster_sg.id
   to_port                  = 443
   type                     = "ingress"
 }

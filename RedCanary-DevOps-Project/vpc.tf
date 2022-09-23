@@ -6,7 +6,7 @@ resource "aws_vpc" "prod_vpc" {
   enable_dns_support   = true
 
   tags = {
-    Name  = "${var.project}-vpc"
+    Name = "${var.project}-vpc"
   }
 }
 
@@ -19,7 +19,7 @@ resource "aws_subnet" "public_subnet" {
   availability_zone = data.aws_availability_zones.available.names[count.index]
 
   tags = {
-    Name  = "${var.project}-public-subnet"
+    Name = "${var.project}-public-subnet"
   }
 
   map_public_ip_on_launch = true
@@ -34,7 +34,7 @@ resource "aws_subnet" "private_subnet" {
   availability_zone = data.aws_availability_zones.available.names[count.index]
 
   tags = {
-    Name  = "${var.project}-private-subnet"
+    Name = "${var.project}-private-subnet"
   }
 }
 
@@ -56,7 +56,7 @@ resource "aws_route_table" "prod_public_route" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway. prod_igw.id
+    gateway_id = aws_internet_gateway.prod_igw.id
   }
 
   tags = {
@@ -68,8 +68,8 @@ resource "aws_route_table" "prod_public_route" {
 resource "aws_route_table_association" "public_subnet_access" {
   count = var.availability_zones_count
 
-  subnet_id      = aws_subnet.public_subnet[count.index]
-  route_table_id = aws_route_table. prod_public_route.id
+  subnet_id      = aws_subnet.public_subnet[count.index].id
+  route_table_id = aws_route_table.prod_public_route.id
 }
 
 # NAT Elastic IP
@@ -94,14 +94,14 @@ resource "aws_nat_gateway" "prod_nat_gateway" {
 # Add route to route table
 resource "aws_route" "prod_route_table" {
   route_table_id         = aws_route_table.prod_public_route.id
-  nat_gateway_id         = aws_nat_gateway. prod_nat_gateway.id
+  nat_gateway_id         = aws_nat_gateway.prod_nat_gateway.id
   destination_cidr_block = "0.0.0.0/0"
 }
 
 # Security group for public subnet
 resource "aws_security_group" "sg_public_subnet" {
-  name   =  "${var.project}-public-sg"
-  vpc_id = aws_vpc.prod_vpc
+  name   = "${var.project}-public-sg"
+  vpc_id = aws_vpc.prod_vpc.id
 
   tags = {
     Name = "${var.project}-public-sg"
@@ -138,7 +138,7 @@ resource "aws_security_group_rule" "sg_egress_public" {
 
 # Security group for data plane
 resource "aws_security_group" "data_plane_sg" {
-  name   =  "${var.project}-Worker-sg"
+  name   = "${var.project}-Worker-sg"
   vpc_id = aws_vpc.prod_vpc.id
 
   tags = {
