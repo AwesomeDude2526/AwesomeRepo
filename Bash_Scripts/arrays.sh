@@ -32,3 +32,38 @@ for i in "${arrayName[@]}"
 do
    echo $i
 done
+
+
+
+##KEY AND VALUES
+declare -A myArray=([one]=un [two]=deux [three]=trois)
+echo ${myArray[*]}
+deux trois un
+echo ${myArray[one]}
+un
+
+unset myArray[one]
+echo ${myArray[*]}
+deux trois
+
+unset myArray
+echo ${myArray[*]}
+
+
+#Print Associative Array Values
+myAssociativeArray=([a]=123 [b]=456)
+for value in "${myAssociativeArray[@]}"; do echo "$value"; done
+456
+123
+
+# Print Associative Array Keys
+myAssociativeArray=([a]=123 [b]=456)
+for keys in "${!myAssociativeArray[@]}"; do echo "$keys"; done
+b
+a
+
+
+#Print the Array Length
+myArray=(a b c d)
+echo "myArray contain ${#myArray[*]} elements"
+myArray contain 4 elements
