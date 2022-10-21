@@ -1,0 +1,26 @@
+1) Install the Python Virtual Environment Package
+yum install python3-virtualenv -y
+
+
+2) Create the Virtual Environment - This will create a directory called new_virt_env, in which the venv exists
+python -m venv new_virt_env
+
+
+3) Activate the Virtual Environment
+source new_virt_env/bin/activate
+cd new_virt_env
+
+
+4) Deactivate the Virtual Environment
+Type "deactivate" while your inside your virtual environment
+
+
+5) Remove the Virtual Environment by deleting the folder
+rm -rf new_virt_env
+
+
+6) Output currently installed packages via Freeze, and use the requirements.txt file to re-install the same ones if they've got deleted
+pip freeze
+pip freeze > requirements.txt
+pip install -r requirements.txt
+
