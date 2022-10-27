@@ -1,0 +1,388 @@
+KUBERNETES (K8s):
+
+Kubernetes is an open-source system for automating deployment, scaling and management of containerized applications. K8s helps you to deploy containers across a pool of compute resources like servers. It also helps to deploy multiple replicas of your application across multiple servers. It also helps to scale up and scale down our application.
+
+Kubectl is the command line tool that allows you to run commands against Kubernetes clusters. You can use kubectl to deploy applications, inspect and manage cluster resources, and view logs. Basically kubectl allows you to interact with Kubernetes from the command line. Kubectl allows you to view, create, modify, and delete Kubernetes objects. It communicates with the K8s API behind the scenes to carry out your commands.
+
+Pod is a group of one or more containers with shared storage and network resources. To deploy a pod, create a yaml file to define the pod and container specs (shown below) and then execute command to deploy the pod: (kubectl create -f nginx-pod.yml). You can view your created pod with command: (kubectl get pods -o wide). View the pod logs with command: (kubectl logs nginx-pod).
+
+
+
+
+K8s MASTER NODE COMPONENTS:
+
+Control plane is a collection of services that control the cluster. Users interact with the cluster using the control plane. It also monitors the state of the cluster.
+
+API Server acts as the interface between the user and the cluster.
+
+Controllers/Control Loops monitor the running state of the systems to make sure the system is running in the desired state. If it’s not, then it makes the changes to the systems to ensure the Desired State.
+
+Affinity – When you want two pods to always stay on the same node at all time. (Done by Scheduler)
+Anti-Affinity – When you want two pods to always stay on two different nodes. (Done by Scheduler)
+
+
+
+
+K8s WORKER NODE COMPONENTS:
+
+Worker Node is a machine that runs containers within the cluster. It runs and manages the containers on the node. It monitors the state of the containers on the node and reports the status back to the control plane.
+
+Worker nodes require a container runtime to manage containers, and use a component called kubelet agent to manage Kubernetes activity on the node. Both the container runtime and the kubelet agent get installed on the worker nodes.
+
+Container Runtime is the software used to run containers on a machine. There are many container runtimes available, such as Docker and containerd. Kubernetes interacts with this in order to actually run the containers.
+
+The Kubernetes networking model involves creating a virtual network across the whole cluster. This means that every pod on the cluster has a unique IP address, and can communicate with any other pod in the cluster, even if that other pod is running on a different worker node.
+
+
+
+
+K8s WORKFLOW:
+Desired State is the MANIFEST file that can be written in YAML or JSON, it’s in declarative language, it lists the deployments we want. Desired state gets stored in the Cluster Store (etcd), Scheduler issues the work to the worker nodes, and Controller works to make sure the Observed State matches the Desired State.
+
+
+
+
+K8s PODS vs DEPLOYMENTS:
+Deployments are a great way to automate the management of your pods. A pod deployment allows you to specify a desired state for a set of pods. The cluster will then constantly work to maintain that desired state. It was take care of Scaling, Rolling Updates, and Self-Healing.
+
+
+
+
+K8s SERVICES:
+A Service creates an abstraction layer on top of a set of replica pods. You can access the service rather than accessing the pods directly, so as pods come and go, you get uninterrupted, dynamic access to whatever replicas are up at that time. A Service works similar to a Load Balancer.
+
+
+
+
+SETTING UP K8s MASTER & WORKER NODES CLUSTER:
+
+We’re using Ubuntu 18.04 for both Master and Worker Nodes.
+Ensure that both nodes have at least 2 CPUs and 2G RAM, and swap is turned off on both hosts (swapoff -a).
+
+1) The first step in setting up a new K8s Cluster is to install a container runtime such as Docker.
+
+Here are the commands to install Docker container runtime (Execute these on the Master and Worker Nodes):
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+sudo add-apt-repository \
+"deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+$(lsb_release -cs) \
+stable"
+
+sudo apt-get update
+
+sudo apt-get install -y docker-ce=18.06.1~ce~3-0~ubuntu
+
+sudo apt-mark hold docker-ce
+
+sudo docker version (This command should show the below output: Both Client and Server)
+root@K8-Master:~# docker version
+Client:
+ Version:           18.06.1-ce
+ API version:       1.38
+ Go version:        go1.10.3
+ Git commit:        e68fc7a
+ Built:             Tue Aug 21 17:24:51 2018
+ OS/Arch:           linux/amd64
+ Experimental:      false
+
+Server:
+ Engine:
+  Version:          18.06.1-ce
+  API version:      1.38 (minimum version 1.12)
+  Go version:       go1.10.3
+  Git commit:       e68fc7a
+  Built:            Tue Aug 21 17:23:15 2018
+  OS/Arch:          linux/amd64
+  Experimental:     false
+
+
+If you get this error, then run this command to fix it, and it should show the above output of both Client and Server: ( chmod 666 /var/run/docker.sock )
+Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get http://%2Fvar%2Frun%2Fdocker.sock/v1.38/version: dial unix /var/run/docker.sock: connect: permission denied
+
+
+
+2) Installing Kubeadm, Kubelet, and Kubectl (Now that Docker is installed, we are ready to install the Kubernetes components).
+
+Here are the commands to install the Kubernetes components: (Execute these on the Master & Worker Nodes).
+
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+
+cat << EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+
+sudo apt-get update
+
+sudo apt-get install -y kubelet=1.15.7-00 kubeadm=1.15.7-00 kubectl=1.15.7-00
+
+sudo apt-mark hold kubelet kubeadm kubectl
+
+kubeadm version
+
+
+
+3) Bootstrapping the Cluster. Ready to get a real Kubernetes cluster up and running! Bootstrap the cluster on the Kube Master Node. Then, join each of the Worker Node to the cluster, forming an actual multi-node Kubernetes cluster.
+
+Here are the commands:
+
+# On the Kube Master Node, initialize the cluster with below command:
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+# This command may take a few minutes to complete.
+
+# When it is done, setup the local kubeconfig by running the below 3 commands on the Kube Master Node:
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+# Now the K8s Master should be up and running. Verify that the K8s Master is responsive and that Kubectl is working by running the below command (Should get both Client and Server, as below):
+kubectl version
+root@K8-Master:~# kubectl version
+Client Version: version.Info{Major:"1", Minor:"15", GitVersion:"v1.15.7", GitCommit:"6c143d35bb11d74970e7bc0b6c45b6bfdffc0bd4", GitTreeState:"clean", BuildDate:"2019-12-11T12:42:56Z", GoVersion:"go1.12.12", Compiler:"gc", Platform:"linux/amd64"}
+Server Version: version.Info{Major:"1", Minor:"15", GitVersion:"v1.15.12", GitCommit:"e2a822d9f3c2fdb5c9bfbe64313cf9f657f0a725", GitTreeState:"clean", BuildDate:"2020-05-06T05:09:48Z", GoVersion:"go1.12.17", Compiler:"gc", Platform:"linux/amd64"}
+
+# The “kubeadm init” command should output a “kubeadm join” command containing a token and hash. Copy that command and run it with sudo on all the Worker Nodes. It should look something like this:
+
+*** RUN THE “kubeadm join” COMMAND ON THE WORKER NODES ONLY ***
+kubeadm join 192.168.1.150:6443 --token 3gym4i.ndee68hvenjzkofs \
+    --discovery-token-ca-cert-hash sha256:3e18dfa8d90883a2c4dd0d6e4493309bd564043cea4db6db0c1d861be0911676 --v=2
+
+sudo kubeadm join $some_ip:6443 --token $some_token --discovery-token-ca-cert-hash $some_hash
+
+If you need to set the docker cgroup to systemd, run both below commands as root (you might get this error while running the “kubeadm join” command):
+echo '{"exec-opts": ["native.cgroupdriver=systemd"]}' >> /etc/docker/daemon.json
+systemctl restart docker
+
+If the “kubeadm join” command hangs, it could be a firewall issue or you need to turn off swap. (The --v=2 should give you more information as to what the issue is).
+
+If “kubeadm join” command executes correctly, you should get the below output towards the end:
+This node has joined the cluster:
+* Certificate signing request was sent to apiserver and a response was received.
+* The Kubelet was informed of the new secure connection details.
+Run 'kubectl get nodes' on the control-plane to see this node join the cluster.
+
+# From the Kube Master node, verify that all nodes have successfully joined the cluster with the below command. If everything is good, it should look something like this:
+kubectl get nodes
+root@K8-Master:~# kubectl get nodes
+NAME        STATUS     ROLES    AGE   VERSION
+k8-master   NotReady   master   37m   v1.15.7
+k8-worker   NotReady   <none>   18s   v1.15.7
+
+# NOTE: The nodes are expected to have a STATUS of “NotReady” at this point as Networking is not setup yet.
+
+# We can get more information about a Node by executing the below command on the Master Node:
+kubectl describe node node_name
+root@K8-Master:~# kubectl describe node k8-master
+
+
+
+4) Configuring Networking with Flannel to Provide Networking Between Containers:
+
+# Once the Kubernetes cluster is setup, we still need to configure cluster networking in order to make the cluster fully functional. We will configure a cluster network using Flannel. (https://coreos.com/flannel/docs/latest/)
+
+Here are the commands:
+
+# On both the Master and Worker Nodes, execute the following commands:
+
+echo "net.bridge.bridge-nf-call-iptables=1" | sudo tee -a /etc/sysctl.conf
+
+sudo sysctl -p
+
+# Install Flannel in the cluster by running the below command on the Master Node ONLY:
+
+kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel-old.yaml
+
+# Verify that all the nodes now have a STATUS of "Ready" by executing the below command on Master Node:
+kubectl get nodes
+root@K8-Master:~# kubectl get nodes
+NAME        STATUS   ROLES    AGE   VERSION
+k8-master   Ready    master   23h   v1.15.7
+k8-worker   Ready    <none>   23h   v1.15.7
+
+# Verify that the Flannel pods are up and running. Run the below command on the Master Node to verify. There should be pods with "flannel" in the name, and all of them should have a status of "Running".
+kubectl get pods -n kube-system
+root@K8-Master:~# kubectl get pods -n kube-system
+NAME                                READY   STATUS    RESTARTS   AGE
+coredns-5d4dd4b4db-nfs9q            1/1     Running   0          23h
+coredns-5d4dd4b4db-pqd5g            1/1     Running   0          23h
+etcd-k8-master                      1/1     Running   2          23h
+kube-apiserver-k8-master            1/1     Running   2          23h
+kube-controller-manager-k8-master   1/1     Running   2          23h
+kube-flannel-ds-amd64-6ndpd         1/1     Running   0          3m11s
+kube-flannel-ds-amd64-sdmlc         1/1     Running   0          3m11s
+kube-proxy-j4nf9                    1/1     Running   1          23h
+kube-proxy-v4649                    1/1     Running   2          23h
+kube-scheduler-k8-master            1/1     Running   2          23h
+
+
+*** WE HAVE NOW SUCCESSFULLY CONFIGURED OUR KUBERNETES CLUSTER ***
+
+
+
+5) In order to run and manage containers with Kubernetes, we will need to use pods. We will create a simple pod and then will look at some ways to explore and interact with pods in the Kubernetes cluster.
+
+# Let’s Create a simple Pod running an Nginx container:
+
+# On the Master Node, create an nginx-pod.yml file with the below code:
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+
+# Execute the below command to create the Pod and run the Nginx Container within the Pod:
+kubectl create -f nginx-pod.yml
+
+# Verify that the Nginx pod is in the Running state by executing the below command(s) on the Master Node:
+kubectl get pods     OR     kubectl get pods -o wide
+root@K8-Master:~# kubectl get pods
+NAME    READY   STATUS    RESTARTS   AGE
+nginx   1/1     Running   0          38s
+
+root@K8-Master:~# kubectl get pods -o wide
+NAME                    	READY   	STATUS    RESTARTS   	AGE   	IP           	NODE     NOMINATED NODE   READINESS GATES
+nginx-9b644dcd5-87m85   1/1     Running   0          11m   10.244.1.4   k8-worker   <none>           <none>
+nginx-9b644dcd5-bglmp   1/1     Running   0          11m   10.244.1.5   k8-worker   <none>           <none>
+
+# Get more information about the Nginx pod by executing the below command on the Master Node:
+kubectl describe pod nginx
+
+# Delete the pod by executing the below command on the Master Node:
+kubectl delete pod nginx
+
+
+
+6) Creating a Deployment with two Nginx Pods:
+
+# On the Master Node, create an nginx-deployment.yml file with the below code:
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.15.4
+        ports:
+        - containerPort: 80
+
+# Execute the below command to create two Pods that will run an Nginx Container within each pod:
+kubectl create -f nginx-deployment.yml
+
+# Verify the Deployment by executing the below command on the Master Node:
+kubectl get deployment     OR     kubectl get deployments
+root@K8-Master:~# kubectl get deployment
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+nginx   2/2     2            2           8m46s
+
+# Verify that both Nginx Pods are in the Running state by executing the below command on the Master Node:
+kubectl get pods
+root@K8-Master:~# kubectl get pods
+NAME                    READY   STATUS    RESTARTS   AGE
+nginx-9b644dcd5-87m85   1/1     Running   0          5m12s
+nginx-9b644dcd5-bglmp   1/1     Running   0          5m12s
+
+# Get more information about the Deployment by executing the below command on the Master Node:
+kubectl describe deployment nginx
+
+# Delete the Deployment by executing the below command on the Master Node:
+kubectl delete deployment nginx
+
+
+
+7) Test Connectivity between Pods in a Kubernetes Cluster:
+
+# Create Two Pods, running two separate containers, Nginx and Busybox:
+
+# On the Master Node, create an busybox-pod.yml file with the below code:
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox
+spec:
+  containers:
+  - name: busybox
+    image: radial/busyboxplus:curl
+    args:
+    - sleep
+    - "1000"
+
+# Execute the below command to create the pod and run the Busybox container within the pod:
+kubectl create -f busybox-pod.yml
+
+# Verify that the Busybox pod is in the Running state by executing the below command on the Master Node:
+kubectl get pods -o wide
+root@K8-Master:~# kubectl get pods -o wide
+NAME                    READY   STATUS    RESTARTS   AGE    IP           NODE        NOMINATED NODE   READINESS GATES
+busybox                 1/1     Running   0          101s   10.244.1.6   k8-worker   <none>           <none>
+nginx-9b644dcd5-bglmp   1/1     Running   0          22m    10.244.1.5   k8-worker   <none>           <none>
+
+# Using the IP Address of the Nginx Pod, contact the Nginx Pod from the Busybox Pod via the below command:
+kubectl exec busybox -- curl nginx_pod_ip
+
+root@K8-Master:~# kubectl exec busybox -- curl 10.244.1.5
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+
+
+
+8) Kubernetes Services:
+
+# We need a way to easily communicate with the dynamic set of replicas managed by a deployment. This is where services come in. Let’s demonstrate how to create a simple service, and explore that service in our own cluster.
+
+# Let’s Create a NodePort Service on top of an Nginx Pod:
+
+# On the Master Node, create an nginx-service.yml file with the below code:
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    nodePort: 30080
+  type: NodePort
+
+# Execute the below command to create the Service:
+kubectl create -f nginx-service.yml
+
+# Verify the Service in the cluster by executing the below command(s) on the Master Node:
+kubectl get service     OR     kubectl get svc
+root@K8-Master:~# kubectl get service
+NAME            TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+kubernetes      ClusterIP   10.96.0.1        <none>        443/TCP        25h
+nginx-service   NodePort    10.109.217.200   <none>        80:30080/TCP   3m34s
+
+root@K8-Master:~# kubectl get svc
+NAME            TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+kubernetes      ClusterIP   10.96.0.1        <none>        443/TCP        25h
+nginx-service   NodePort    10.109.217.200   <none>        80:30080/TCP   3m46s
+
+# Since this is a NodePort service, we should be able to access it using port 30080 on any of our cluster's servers. We can test this with the command:
+curl localhost:30080
+
+We should get an HTML response from Nginx!
+
