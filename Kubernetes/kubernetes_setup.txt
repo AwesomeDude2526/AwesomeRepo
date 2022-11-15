@@ -48,8 +48,26 @@ Deployments are a great way to automate the management of your pods. A pod deplo
 
 
 
-K8s SERVICES:
-A Service creates an abstraction layer on top of a set of replica pods. You can access the service rather than accessing the pods directly, so as pods come and go, you get uninterrupted, dynamic access to whatever replicas are up at that time. A Service works similar to a Load Balancer.
+K8s SERVICES / INGRESS:
+A Service creates an abstraction layer on top of a set of replica pods. You can access the service rather than accessing the pods directly, so as pods come and go, you get uninterrupted, dynamic access to whatever replicas are up at that time. A Service works similar to a Load Balancer. Service gets a permanent IP address. Ingress routes traffic into the pod.
+
+
+
+
+K8s ConfigMap:
+ConfigMap is the external configuration of your application, it contains the configuration data of your application like the URL of your database. It connects to the pod, so the pod gets the updated data that ConfigMap contains.
+
+
+
+
+K8s Secret:
+Secret is just like ConfigMap, but it’s used to store secret data like credentials like DB username and DB password. It connects to the pod just like ConfigMap and the pod can get the updated data.
+
+
+
+
+K8s Volumes:
+Volumes are used for data storage. You can attach a local or remote storage to your pod to store the data persistently.
 
 
 
@@ -234,8 +252,9 @@ spec:
   - name: nginx
     image: nginx
 
-# Execute the below command to create the Pod and run the Nginx Container within the Pod:
+# Execute the below commands to create the Pod and run the Nginx Container within the Pod:
 kubectl create -f nginx-pod.yml
+kubectl apply -f nginx-pod.yml
 
 # Verify that the Nginx pod is in the Running state by executing the below command(s) on the Master Node:
 kubectl get pods     OR     kubectl get pods -o wide
@@ -248,8 +267,14 @@ NAME                    	READY   	STATUS    RESTARTS   	AGE   	IP           	NOD
 nginx-9b644dcd5-87m85   1/1     Running   0          11m   10.244.1.4   k8-worker   <none>           <none>
 nginx-9b644dcd5-bglmp   1/1     Running   0          11m   10.244.1.5   k8-worker   <none>           <none>
 
+# Get an interactive terminal into the Nginx pod by executing the below command on the Master Node:
+kubectl exec -it nginx -- /bin/bash
+
 # Get more information about the Nginx pod by executing the below command on the Master Node:
 kubectl describe pod nginx
+
+# Get logs for the Nginx pod by executing the below command on the Master Node:
+kubectl logs nginx
 
 # Delete the pod by executing the below command on the Master Node:
 kubectl delete pod nginx
@@ -299,6 +324,9 @@ nginx-9b644dcd5-bglmp   1/1     Running   0          5m12s
 
 # Get more information about the Deployment by executing the below command on the Master Node:
 kubectl describe deployment nginx
+
+# Edit the configuration file for the deployment by executing the below command on the Master Node:
+kubectl edit deployment nginx
 
 # Delete the Deployment by executing the below command on the Master Node:
 kubectl delete deployment nginx
