@@ -1,9 +1,11 @@
 ### Template is useful if you want to copy configuration files that contain dynamic information. Create file on Control Node using variables. Change the values of the variables within the playbook to update the file on different servers###
 
 ---
-- hosts: servername
+- name: Working with jinja2 templates
+  hosts: servername
   tasks:
-  - template:
+  - name: Copy template file from control node to mananged node
+    template:
       src: /root/fileoncontrolnode
       dest: /tmp/fileonremoteserver
   vars:
@@ -13,3 +15,14 @@
     car1: Honda
     car2: Toyota
     car3: Lexus
+
+
+- name: Working with jinja2 templates
+  hosts: all
+  tasks:
+  - name: Copy template file from control node to mananged node
+    template:
+      src: hosts.j2
+      dest: /tmp/hostsfile
+
+### Create directory called templates and store the jinja2 files under it ###

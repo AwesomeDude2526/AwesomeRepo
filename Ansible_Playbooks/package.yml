@@ -1,0 +1,23 @@
+---
+- name: Install package from host_vars
+  hosts: all
+  tasks:
+  - name: Install package {{ package }}
+    yum:
+      name: "{{ package }}"
+      state: present
+
+
+- name: Get Package Details using package_facts module
+  hosts: all
+  vars:
+    my_package: nmap
+  tasks:
+  - name: Gather package facts
+    package_facts:
+      manager: auto
+  - name: Show package facts for {{ my_package }}
+    debug:
+      var: ansible_facts.packages[my_package]
+    when: my_package in ansible_facts.packages
+
