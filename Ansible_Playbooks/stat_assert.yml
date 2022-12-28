@@ -1,0 +1,21 @@
+---
+- name: Testing out stat and assert modules
+  hosts: all
+  tasks:
+    - name: Stat of file
+      stat:
+        path: /home/ansible/ansible/testfile.txt
+      register: fileoutput
+
+    - name: Debug the stat module
+      debug:
+        var: fileoutput
+
+    - name: Assert module
+      assert:
+        that: "'inode/x-empty' in fileoutput.stat.mimetype"
+
+    - name:
+      assert:
+        that: "fileoutput.stat.exists"
+        success_msg: "The file exists"
